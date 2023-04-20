@@ -3,7 +3,8 @@ import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
 import { nanoid } from 'nanoid';
-import { Container } from 'App.styled';
+import { Container } from '../App.styled';
+import { IContactState, IFormSubmit } from '../types/appTypes';
 
 const initialContacts = [
   { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
@@ -12,38 +13,39 @@ const initialContacts = [
   { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
 ];
 
-export function App() {
+export const App:React.FC = ()=> {
   const [contacts, setContacts] = useState(() => {
-    return JSON.parse(localStorage.getItem('contacts')) ?? initialContacts;
+    const savedContacts = localStorage.getItem('contacts');
+  return savedContacts ? JSON.parse(savedContacts) : initialContacts;
   });
-  const [filter, setFilter] = useState('');
+  const [filter, setFilter] = useState<string>('');
 
   useEffect(() => {
     localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
 
-  const addNewContact = contact => {
+  const addNewContact = (contact:IFormSubmit) => {
     const name = contact.name.toLowerCase();
-    if (contacts.find(elem => elem.name.toLowerCase() === name)) {
+    if (contacts.find((elem:IContactState) => elem.name.toLowerCase() === name)) {
       alert(`${name} is alredy in contacts`);
       return;
     }
     const newContact = { id: nanoid(), ...contact };
     setContacts([newContact, ...contacts]);
   };
-  const onChangeFilter = e => {
+  const onChangeFilter = (e:React.ChangeEvent<HTMLInputElement>) => {
     setFilter(e.currentTarget.value);
   };
 
   const getFilteredContacts = () => {
     const normalizedFilter = filter.toLowerCase();
-    return contacts.filter(contact =>
+    return contacts.filter((contact:IContactState) =>
       contact.name.toLowerCase().includes(normalizedFilter)
     );
   };
 
-  const onDeleteContact = id => {
-    setContacts(contacts.filter(contact => contact.id !== id));
+  const onDeleteContact = (id:string) => {
+    setContacts(contacts.filter((contact:IContactState) => contact.id !== id));
   };
 
   const filteredContacts = getFilteredContacts();

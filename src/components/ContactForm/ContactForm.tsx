@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import { IContactFormProps } from '../../types/appTypes';
 import { Form, Label, Input, Button } from './ContactForm.styled';
 
-export function ContactForm({ onSubmit }) {
+export const ContactForm:React.FC<IContactFormProps> = ({ onSubmit })=> {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
-  const handleChange = e => {
+  const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     switch (name) {
       case 'name':
@@ -20,7 +20,7 @@ export function ContactForm({ onSubmit }) {
         return;
     }
   };
-  const handleSubmit = e => {
+  const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit({ name, number });
     reset();
@@ -56,6 +56,3 @@ export function ContactForm({ onSubmit }) {
     </Form>
   );
 }
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
